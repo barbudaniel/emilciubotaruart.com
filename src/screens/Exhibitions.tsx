@@ -11,7 +11,7 @@ const exhibitions = [
   {
     id: 1,
     title: 'Lumini și Umbre',
-    description: 'O expoziție dedicată explorării contrastului în pictura tradițională românească.',
+    description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt.',
     date: '15 Martie 2024 - 30 Aprilie 2024',
     location: 'Galeria Națională de Artă, București',
     status: 'upcoming',
@@ -20,7 +20,7 @@ const exhibitions = [
   {
     id: 2,
     title: 'Abstract Emotions',
-    description: 'Lucrări abstracte care explorează emoțiile umane prin culoare și textură.',
+    description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt.',
     date: '10 Ianuarie 2024 - 28 Februarie 2024',
     location: 'Muzeul de Artă Contemporană, Cluj',
     status: 'ongoing',
@@ -29,7 +29,7 @@ const exhibitions = [
   {
     id: 3,
     title: 'Peisaje Românești',
-    description: 'Retrospectivă dedicată frumuseții peisajelor din România.',
+    description: 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt.',
     date: '5 Octombrie 2023 - 20 Decembrie 2023',
     location: 'Galeria de Artă Modernă, Brașov',
     status: 'past',
@@ -66,7 +66,7 @@ const Exhibitions = () => {
             </h1>
             <OrnamentalDivider />
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Descoperiți expozițiile curente și viitoare, precum și activitățile artistice
+              Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor
             </p>
           </div>
 
