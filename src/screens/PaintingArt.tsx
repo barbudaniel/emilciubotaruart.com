@@ -11,38 +11,59 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 const categories = [
-  'Toate',
-  'Peisaj',
-  'Floreasca',
-  'Natură Statică',
-  'Iarnă',
-  'Animale',
-  'Marinescu',
+  { name: 'Toate', slug: 'toate' },
+  { name: 'Peisaj', slug: 'landscape' },
+  { name: 'Floreasca', slug: 'floreasca' },
+  { name: 'Natură Statică', slug: 'still-life' },
+  { name: 'Iarnă', slug: 'winter' },
+  { name: 'Animale', slug: 'animals' },
+  { name: 'Marinescu', slug: 'marinescu' },
 ];
+
+// Map URL slugs to category names
+const slugToCategoryMap: Record<string, string> = {
+  'landscape': 'Peisaj',
+  'floreasca': 'Floreasca',
+  'still-life': 'Natură Statică',
+  'winter': 'Iarnă',
+  'animals': 'Animale',
+  'marinescu': 'Marinescu',
+};
 
 const artworks = [
   { id: 1, title: 'Peisaj Românesc', category: 'Peisaj', slug: 'peisaj-romanesc', year: '2024', medium: 'Ulei pe pânză', size: '100x80cm', image: '/artwork-landscape-1.jpg' },
   { id: 2, title: 'Munții Carpați', category: 'Peisaj', slug: 'muntii-carpati', year: '2023', medium: 'Ulei pe pânză', size: '120x90cm', image: '/artwork-landscape-1.jpg' },
-  { id: 3, title: 'Natură Statică cu Fructe', category: 'Natură Statică', slug: 'natura-statica-fructe', year: '2024', medium: 'Ulei pe pânză', size: '60x80cm', image: '/artwork-still-life-1.jpg' },
-  { id: 4, title: 'Vase și Flori', category: 'Natură Statică', slug: 'vase-si-flori', year: '2023', medium: 'Ulei pe pânză', size: '70x90cm', image: '/artwork-still-life-1.jpg' },
-  { id: 5, title: 'Iarnă în Carpați', category: 'Iarnă', slug: 'iarna-in-carpati', year: '2023', medium: 'Ulei pe pânză', size: '100x100cm', image: '/artwork-winter-1.jpg' },
-  { id: 6, title: 'Peisaj de Iarnă', category: 'Iarnă', slug: 'peisaj-de-iarna', year: '2024', medium: 'Ulei pe pânză', size: '90x120cm', image: '/artwork-winter-1.jpg' },
+  { id: 3, title: 'Valea Verde', category: 'Peisaj', slug: 'valea-verde', year: '2024', medium: 'Ulei pe pânză', size: '80x100cm', image: '/artwork-landscape-1.jpg' },
+  { id: 4, title: 'Grădina Floreasca', category: 'Floreasca', slug: 'gradina-floreasca', year: '2024', medium: 'Ulei pe pânză', size: '90x70cm', image: '/artwork-landscape-1.jpg' },
+  { id: 5, title: 'Flori de Primăvară', category: 'Floreasca', slug: 'flori-de-primavara', year: '2023', medium: 'Ulei pe pânză', size: '80x60cm', image: '/artwork-landscape-1.jpg' },
+  { id: 6, title: 'Natură Statică cu Fructe', category: 'Natură Statică', slug: 'natura-statica-fructe', year: '2024', medium: 'Ulei pe pânză', size: '60x80cm', image: '/artwork-still-life-1.jpg' },
+  { id: 7, title: 'Vase și Flori', category: 'Natură Statică', slug: 'vase-si-flori', year: '2023', medium: 'Ulei pe pânză', size: '70x90cm', image: '/artwork-still-life-1.jpg' },
+  { id: 8, title: 'Masă Festivă', category: 'Natură Statică', slug: 'masa-festiva', year: '2024', medium: 'Ulei pe pânză', size: '80x100cm', image: '/artwork-still-life-1.jpg' },
+  { id: 9, title: 'Iarnă în Carpați', category: 'Iarnă', slug: 'iarna-in-carpati', year: '2023', medium: 'Ulei pe pânză', size: '100x100cm', image: '/artwork-winter-1.jpg' },
+  { id: 10, title: 'Peisaj de Iarnă', category: 'Iarnă', slug: 'peisaj-de-iarna', year: '2024', medium: 'Ulei pe pânză', size: '90x120cm', image: '/artwork-winter-1.jpg' },
+  { id: 11, title: 'Zăpadă pe Dealuri', category: 'Iarnă', slug: 'zapada-pe-dealuri', year: '2023', medium: 'Ulei pe pânză', size: '100x80cm', image: '/artwork-winter-1.jpg' },
+  { id: 12, title: 'Cal Alb', category: 'Animale', slug: 'cal-alb', year: '2024', medium: 'Ulei pe pânză', size: '100x80cm', image: '/artwork-landscape-1.jpg' },
+  { id: 13, title: 'Păsări în Zbor', category: 'Animale', slug: 'pasari-in-zbor', year: '2023', medium: 'Ulei pe pânză', size: '80x100cm', image: '/artwork-landscape-1.jpg' },
+  { id: 14, title: 'Marina Românească', category: 'Marinescu', slug: 'marina-romaneasca', year: '2024', medium: 'Ulei pe pânză', size: '120x90cm', image: '/artwork-landscape-1.jpg' },
+  { id: 15, title: 'Portul la Apus', category: 'Marinescu', slug: 'portul-la-apus', year: '2023', medium: 'Ulei pe pânză', size: '100x80cm', image: '/artwork-landscape-1.jpg' },
 ];
 
 const PaintingArt = () => {
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get('category');
-  const [selectedCategory, setSelectedCategory] = useState(categoryParam || 'Toate');
+  const [selectedCategory, setSelectedCategory] = useState('Toate');
   
   useFadeUpOnScroll();
 
   useEffect(() => {
     if (categoryParam) {
-      const formattedCategory = categoryParam
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-      setSelectedCategory(formattedCategory);
+      // Convert URL slug to category name
+      const categoryName = slugToCategoryMap[categoryParam];
+      if (categoryName) {
+        setSelectedCategory(categoryName);
+      }
+    } else {
+      setSelectedCategory('Toate');
     }
   }, [categoryParam]);
 
@@ -70,11 +91,11 @@ const PaintingArt = () => {
           <div className="flex flex-wrap justify-center gap-3 mb-12 fade-up">
             {categories.map((category) => (
               <Button
-                key={category}
-                variant={selectedCategory === category ? 'default' : 'outline'}
-                onClick={() => setSelectedCategory(category)}
+                key={category.slug}
+                variant={selectedCategory === category.name ? 'default' : 'outline'}
+                onClick={() => setSelectedCategory(category.name)}
               >
-                {category}
+                {category.name}
               </Button>
             ))}
           </div>

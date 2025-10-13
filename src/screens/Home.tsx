@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
@@ -8,20 +7,13 @@ import { OrnamentalDivider } from '@/components/OrnamentalDivider';
 import { useFadeUpOnScroll } from '@/hooks/useFadeUpOnScroll';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const Home = () => {
-  const [scrollY, setScrollY] = useState(0);
-  
   useFadeUpOnScroll();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 1000], [0, 500]);
 
   return (
     <div className="min-h-screen">
@@ -29,12 +21,12 @@ const Home = () => {
       
       {/* Hero Section with Parallax */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform"
+        <motion.div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
           style={{
             backgroundImage: "url('/hero-banner.jpg')",
             filter: 'brightness(0.7)',
-            transform: `translateY(${scrollY * 0.5}px)`
+            y
           }}
         />
         <div className="relative z-10 text-center text-white px-4 fade-up">
@@ -42,7 +34,7 @@ const Home = () => {
             EMIL CIUBOTARU
           </h1>
           <p className="text-xl md:text-2xl mb-8 font-light tracking-wider">
-            Artist & Pictor
+          PAINTER ARTIST
           </p>
           <Link href="/painting-art">
             <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white hover:text-black transition-all">

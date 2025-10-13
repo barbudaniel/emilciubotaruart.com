@@ -30,7 +30,6 @@ export default function RootLayout({
         className={`${cormorant.variable} ${inter.variable} antialiased`}
       >
         <Toaster />
-        <Sonner />
         {children}
       </body>
     </html>
