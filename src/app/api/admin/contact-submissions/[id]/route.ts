@@ -9,17 +9,15 @@ const updateSchema = z.object({
   notes: z.string().max(2000).optional(),
 });
 
-type RouteParams = {
-  params: {
-    id: string;
-  };
-};
-
-export async function PATCH(request: Request, { params }: RouteParams) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     await requireAdminUser();
 
-    const submissionId = params.id;
+    const { id: submissionId } = await params;
+    
     if (!submissionId) {
       return NextResponse.json({ error: "ID-ul mesajului lipsește." }, { status: 400 });
     }
@@ -58,4 +56,3 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "A apărut o eroare neașteptată." }, { status: 500 });
   }
 }
-
