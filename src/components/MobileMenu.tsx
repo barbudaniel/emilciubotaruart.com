@@ -154,7 +154,7 @@ const MobileDropdown = ({
     {isOpen && (
       <div id={`${item.id}-submenu`} className="ml-4 mt-1 flex flex-col gap-1">
         <MobileNavLink item={item} className="px-4 py-2 text-sm" />
-        {item.children.map((child) => (
+        {item.children.map((child: NavigationItem) => (
           <MobileNavLink key={child.id} item={child} className="px-4 py-2 text-sm" />
         ))}
       </div>
