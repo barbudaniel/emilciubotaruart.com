@@ -7,10 +7,10 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Artă Pictură - Emil Ciubotaru',
-  description: 'Lorem ipsum dolor sit amet. Explorați colecția de picturi tradiționale',
+  description: 'Selecție de peisaje, flori și scene figurative în care culoarea devine poveste și memoria respiră prin fiecare tușă.',
   openGraph: {
     title: 'Artă Pictură - Emil Ciubotaru',
-    description: 'Colecție de picturi tradiționale',
+    description: 'Descoperă picturile figurative și poetice ale lui Emil Ciubotaru, realizate în ulei, acrilic și tehnici mixte.',
     type: 'website',
   },
 };

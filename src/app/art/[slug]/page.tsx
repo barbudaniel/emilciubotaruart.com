@@ -15,10 +15,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   return {
     title: `${title} - Emil Ciubotaru`,
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+    description: `Descoperă detaliile lucrării „${title}” semnată de Emil Ciubotaru: materiale, dimensiuni și povestea culorilor sale.`,
     openGraph: {
       title: `${title} - Emil Ciubotaru`,
-      description: 'Lucrare de artă de Emil Ciubotaru',
+      description: `Lucrare originală de Emil Ciubotaru din seria sa de picturi și abstracții picturale.`,
       type: 'article',
     },
   };

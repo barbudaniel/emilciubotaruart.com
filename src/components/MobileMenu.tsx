@@ -1,24 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { X, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ChevronDown, X } from "lucide-react";
 
-const paintingCategories = [
-  { name: 'Peisaj', slug: 'landscape' },
-  { name: 'Floreasca', slug: 'floreasca' },
-  { name: 'Natură Statică', slug: 'still-life' },
-  { name: 'Iarnă', slug: 'winter' },
-  { name: 'Animale', slug: 'animals' },
-  { name: 'Marinescu', slug: 'marinescu' },
-];
-
-const abstractCategories = [
-  { name: 'Impasto', slug: 'impasto' },
-  { name: 'Artă Fluidă', slug: 'fluid-art' },
-];
+import { Button } from "@/components/ui/button";
+import { useCmsData } from "@/providers/cms-data-provider";
+import type { NavigationItem } from "@/lib/cms";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -26,9 +15,13 @@ interface MobileMenuProps {
 }
 
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
-  const [paintingOpen, setPaintingOpen] = useState(false);
-  const [abstractOpen, setAbstractOpen] = useState(false);
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const pathname = usePathname();
+  const {
+    data: {
+      siteIdentity: { navigation },
+    },
+  } = useCmsData();
 
   useEffect(() => {
     if (isOpen) {
@@ -57,8 +50,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   useEffect(() => {
     if (isOpen) {
       onClose();
-      setPaintingOpen(false);
-      setAbstractOpen(false);
+      setOpenItems({});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
@@ -98,104 +90,74 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         {/* Menu Items */}
         <nav className="p-4">
           <div className="flex flex-col gap-1">
-            <Link
-              href="/"
-              className="px-4 py-3 text-sm tracking-wider uppercase font-medium hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center"
-            >
-              Acasă
-            </Link>
-
-            {/* Painting Art with submenu */}
-            <div>
-              <button
-                onClick={() => setPaintingOpen(!paintingOpen)}
-                aria-expanded={paintingOpen}
-                aria-controls="painting-submenu"
-                className="w-full px-4 py-3 text-sm tracking-wider uppercase font-medium hover:bg-secondary rounded-md transition-colors flex items-center justify-between min-h-[44px]"
-              >
-                <span>Artă Pictură</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${paintingOpen ? 'rotate-180' : ''}`}
+            {navigation.map((item) =>
+              item.children.length ? (
+                <MobileDropdown
+                  key={item.id}
+                  item={item}
+                  isOpen={Boolean(openItems[item.id])}
+                  onToggle={() =>
+                    setOpenItems((prev) => ({
+                      ...prev,
+                      [item.id]: !prev[item.id],
+                    }))
+                  }
                 />
-              </button>
-              {paintingOpen && (
-                <div id="painting-submenu" className="ml-4 mt-1 flex flex-col gap-1">
-                  <Link
-                    href="/painting-art"
-                    className="px-4 py-2 text-sm hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center"
-                  >
-                    Vezi Tot
-                  </Link>
-                  {paintingCategories.map((cat) => (
-                    <Link
-                      key={cat.slug}
-                      href={`/painting-art?category=${cat.slug}`}
-                      className="px-4 py-2 text-sm hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center"
-                    >
-                      {cat.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Abstract Art with submenu */}
-            <div>
-              <button
-                onClick={() => setAbstractOpen(!abstractOpen)}
-                aria-expanded={abstractOpen}
-                aria-controls="abstract-submenu"
-                className="w-full px-4 py-3 text-sm tracking-wider uppercase font-medium hover:bg-secondary rounded-md transition-colors flex items-center justify-between min-h-[44px]"
-              >
-                <span>Artă Abstractă</span>
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${abstractOpen ? 'rotate-180' : ''}`}
-                />
-              </button>
-              {abstractOpen && (
-                <div id="abstract-submenu" className="ml-4 mt-1 flex flex-col gap-1">
-                  <Link
-                    href="/abstract-art"
-                    className="px-4 py-2 text-sm hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center"
-                  >
-                    Vezi Tot
-                  </Link>
-                  {abstractCategories.map((cat) => (
-                    <Link
-                      key={cat.slug}
-                      href={`/abstract-art?category=${cat.slug}`}
-                      className="px-4 py-2 text-sm hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center"
-                    >
-                      {cat.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <Link
-              href="/exhibitions"
-              className="px-4 py-3 text-sm tracking-wider uppercase font-medium hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center"
-            >
-              Expoziții & Activități
-            </Link>
-
-            <Link
-              href="/about"
-              className="px-4 py-3 text-sm tracking-wider uppercase font-medium hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center"
-            >
-              Despre
-            </Link>
-
-            <Link
-              href="/contact"
-              className="px-4 py-3 text-sm tracking-wider uppercase font-medium hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center"
-            >
-              Contact
-            </Link>
+              ) : (
+                <MobileNavLink key={item.id} item={item} />
+              ),
+            )}
           </div>
         </nav>
       </div>
     </>
   );
 };
+
+const MobileNavLink = ({ item, className = "" }: { item: NavigationItem; className?: string }) => {
+  const classes = `px-4 py-3 text-sm tracking-wider uppercase font-medium hover:bg-secondary rounded-md transition-colors min-h-[44px] flex items-center ${item.highlight ? "text-accent" : ""} ${className}`;
+
+  if (item.isExternal) {
+    return (
+      <a href={item.href} target="_blank" rel="noreferrer" className={classes}>
+        {item.label}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={item.href} className={classes}>
+      {item.label}
+    </Link>
+  );
+};
+
+const MobileDropdown = ({
+  item,
+  isOpen,
+  onToggle,
+}: {
+  item: NavigationItem;
+  isOpen: boolean;
+  onToggle: () => void;
+}) => (
+  <div>
+    <button
+      onClick={onToggle}
+      aria-expanded={isOpen}
+      aria-controls={`${item.id}-submenu`}
+      className="w-full px-4 py-3 text-sm tracking-wider uppercase font-medium hover:bg-secondary rounded-md transition-colors flex items-center justify-between min-h-[44px]"
+    >
+      <span>{item.label}</span>
+      <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+    </button>
+    {isOpen && (
+      <div id={`${item.id}-submenu`} className="ml-4 mt-1 flex flex-col gap-1">
+        <MobileNavLink item={item} className="px-4 py-2 text-sm" />
+        {item.children.map((child) => (
+          <MobileNavLink key={child.id} item={child} className="px-4 py-2 text-sm" />
+        ))}
+      </div>
+    )}
+  </div>
+);

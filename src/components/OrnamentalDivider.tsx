@@ -1,23 +1,13 @@
-'use client';
+"use client";
+
+import { Sparkle } from "lucide-react";
 
 export const OrnamentalDivider = () => {
-    return (
-      <div className="ornamental-divider">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          className="text-ornament"
-        >
-          <path
-            d="M10 2L11.5 8.5H18L13 12.5L15 19L10 15L5 19L7 12.5L2 8.5H8.5L10 2Z"
-            stroke="currentColor"
-            strokeWidth="1"
-            fill="none"
-          />
-        </svg>
-      </div>
-    );
-  };
-  
+  return (
+    <div className="flex items-center justify-center gap-3 py-4 my-4">
+      <span className="h-px w-12 bg-border" />
+      <Sparkle className="h-4 w-4 text-primary/60" />
+      <span className="h-px w-12 bg-border" />
+    </div>
+  );
+};

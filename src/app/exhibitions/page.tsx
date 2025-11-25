@@ -5,10 +5,10 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Expoziții - Emil Ciubotaru',
-  description: 'Lorem ipsum dolor sit amet. Descoperiți expozițiile și evenimentele artistului',
+  description: 'Calendarul expozițiilor, instalațiilor și evenimentelor la care participă Emil Ciubotaru în țară și în străinătate.',
   openGraph: {
     title: 'Expoziții - Emil Ciubotaru',
-    description: 'Expoziții și evenimente',
+    description: 'Urmărește expozițiile actuale și trecute ale lui Emil Ciubotaru.',
     type: 'website',
   },
 };

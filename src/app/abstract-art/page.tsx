@@ -7,10 +7,10 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Artă Abstractă - Emil Ciubotaru',
-  description: 'Lorem ipsum dolor sit amet. Explorați colecția de artă abstractă și contemporană',
+  description: 'Texturi dense, straturi vibrante și abstracții care transformă emoțiile lui Emil Ciubotaru în hărți de culoare.',
   openGraph: {
     title: 'Artă Abstractă - Emil Ciubotaru',
-    description: 'Colecție de artă abstractă',
+    description: 'Explorați universul abstract al lui Emil Ciubotaru, unde culorile devin ritm și memorie.',
     type: 'website',
   },
 };

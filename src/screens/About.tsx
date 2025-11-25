@@ -1,80 +1,85 @@
-'use client';
+"use client";
 
-import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
-import { OrnamentalDivider } from '@/components/OrnamentalDivider';
-import { useFadeUpOnScroll } from '@/hooks/useFadeUpOnScroll';
-import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import Image from "next/image";
+
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { OrnamentalDivider } from "@/components/OrnamentalDivider";
+import { useFadeUpOnScroll } from "@/hooks/useFadeUpOnScroll";
+import { useCmsData } from "@/providers/cms-data-provider";
+
+const biography = `Hei, bună,
+
+Sunt Emil Ciubotaru, un artist, iar pentru mine culoarea este felul în care
+respir. Îmi scriu gândurile în culori pe pânză, cu tușe dense, uneori blânde, alteori
+neastâmpărate, ca și cum fiecare lucrare ar fi o mărturisire pe care n-am spus-o
+niciodată cu voce tare.
+
+Pictez florile care nu mor niciodată, anotimpurile care trec prin mine mai des
+decât prin calendar și orașele în care lumina se prelinge pe clădiri ca o amintire
+caldă. Uneori, las realitatea să vorbească. Alteori, o răsucesc, o tulbur, o
+transform în abstracții care poartă urme de suflet și tăceri colorate.
+
+Pensula și cuțitul de paletă sunt prelungirea mâinii mele. În urma lor rămân
+straturi groase, reliefuri, vibrații, urme ale felului în care simt lumea. Fiecare
+culoare pe care o așez este o poveste scurtă, iar fiecare lucrare este o întâmplare
+trăită cândva, poate de mine, poate de tine.
+
+Pictura este felul meu de a pune ordine în emoții și de a da formă lucrurilor
+care nu se lasă rostite.
+
+Dacă un tablou de-al meu te face să te oprești o clipă, să respiri altfel sau
+să-ți amintești ceva ce credeai că ai pierdut, atunci arta mea și-a găsit drumul ei.`;
 
 const About = () => {
   useFadeUpOnScroll();
+  const {
+    data: {
+      homepage: { about },
+    },
+  } = useCmsData();
+
+  const heroBlock = about.blocks.find((block) => block.media);
+  const paragraphs = biography.split("\n").reduce<string[]>((acc, line) => {
+    const value = line.trim();
+    if (!value) {
+      acc.push("");
+      return acc;
+    }
+    const lastIndex = acc.length - 1;
+    if (lastIndex >= 0 && acc[lastIndex]) {
+      acc[lastIndex] = `${acc[lastIndex]} ${value}`.trim();
+    } else {
+      acc.push(value);
+    }
+    return acc;
+  }, []).filter(Boolean);
 
   return (
     <div className="min-h-screen">
       <Navigation />
-      
+
       <div className="pt-32 pb-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-10">
-          {/* Hero Portrait */}
-          <div className="flex justify-center mb-12 fade-up">
-            <div className="relative w-96 h-96 rounded-full overflow-hidden shadow-soft">
-              <img
-                src="/portrait.jpg"
-                alt="Emil Ciubotaru"
-                className="w-full h-full object-cover"
-              />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-12 space-y-16">
+          <section className="grid gap-12 lg:grid-cols-[3fr_2fr] items-start fade-up">
+            <div className="space-y-6 text-lg leading-relaxed text-muted-foreground">
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-wide">Despre Emil Ciubotaru</h1>
+              <OrnamentalDivider />
+              {paragraphs.map((paragraph, index) => (
+                <p key={index} className="whitespace-pre-line">
+                  {paragraph}
+                </p>
+              ))}
             </div>
-          </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold text-center mb-6 fade-up tracking-wide">
-            SALUT!
-          </h1>
-          
-          <OrnamentalDivider />
-
-          <div className="max-w-4xl mx-auto">
-            <div className="prose prose-lg mx-auto fade-up text-muted-foreground">
-              <p className="text-xl leading-relaxed mb-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-              </p>
-
-              <h2 className="text-3xl font-bold mt-12 mb-4 text-foreground">Despre Mine</h2>
-              <OrnamentalDivider />
-              
-              <p className="leading-relaxed mb-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
-
-              <p className="leading-relaxed mb-4">
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-
-              <h2 className="text-3xl font-bold mt-12 mb-4 text-foreground">Filozofia Mea</h2>
-              <OrnamentalDivider />
-              
-              <p className="leading-relaxed mb-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
-
-              <h2 className="text-3xl font-bold mt-12 mb-4 text-foreground">Expoziții & Recunoașteri</h2>
-              <OrnamentalDivider />
-              
-              <ul className="list-disc list-inside space-y-2 mb-8">
-                <li>Lorem ipsum dolor - Sit amet consectetur (2023)</li>
-                <li>Adipiscing elit sed - Do eiusmod tempor (2022)</li>
-                <li>Incididunt ut labore - Et dolore magna aliqua (2021)</li>
-                <li>Ut enim ad minim - Veniam quis nostrud (2020)</li>
-              </ul>
-
-              <div className="mt-12 text-center fade-up">
-                <Button size="lg">
-                  <Download className="mr-2" />
-                  Descarcă CV
-                </Button>
+            <div className="space-y-6">
+              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl border bg-muted">
+                {heroBlock?.media ? (
+                  <Image src={heroBlock.media.src} alt={heroBlock.media.alt || heroBlock.title} fill className="object-cover" />
+                ) : null}
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
 

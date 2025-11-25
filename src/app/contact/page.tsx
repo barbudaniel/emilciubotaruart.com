@@ -5,10 +5,10 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Contact - Emil Ciubotaru',
-  description: 'Lorem ipsum dolor sit amet. Contactează artistul pentru comenzi și colaborări',
+  description: 'Programează o vizită în atelier, solicită o lucrare personalizată sau cere detalii despre o piesă semnată de Emil Ciubotaru.',
   openGraph: {
     title: 'Contact - Emil Ciubotaru',
-    description: 'Contactează artistul',
+    description: 'Ia legătura cu atelierul lui Emil Ciubotaru pentru comenzi, expoziții și colaborări artistice.',
     type: 'website',
   },
 };

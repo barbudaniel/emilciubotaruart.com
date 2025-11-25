@@ -5,10 +5,10 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Despre Artist - Emil Ciubotaru',
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Afla mai multe despre artist si cariera sa',
+  description: 'Biografia și manifestul artistic al lui Emil Ciubotaru: povești pictate în straturi bogate, florile care nu se ofilesc și orașele scăldate în lumină.',
   openGraph: {
     title: 'Despre Artist - Emil Ciubotaru',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+    description: 'Descoperă povestea, tehnica și inspirațiile lui Emil Ciubotaru, artist vizual din România.',
     type: 'profile',
   },
 };

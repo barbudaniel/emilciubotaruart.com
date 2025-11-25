@@ -1,61 +1,76 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
-import { OrnamentalDivider } from '@/components/OrnamentalDivider';
-import { useFadeUpOnScroll } from '@/hooks/useFadeUpOnScroll';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 
-const categories = [
-  { name: 'Toate', slug: 'toate' },
-  { name: 'Impasto', slug: 'impasto' },
-  { name: 'Artă Fluidă', slug: 'fluid-art' },
-];
-
-// Map URL slugs to category names
-const slugToCategoryMap: Record<string, string> = {
-  'impasto': 'Impasto',
-  'fluid-art': 'Artă Fluidă',
-};
-
-const artworks = [
-  { id: 1, title: 'Golden Textures', category: 'Impasto', slug: 'golden-textures', year: '2024', medium: 'Ulei pe pânză', size: '100x100cm', image: '/artwork-impasto-1.jpg' },
-  { id: 2, title: 'Earth Layers', category: 'Impasto', slug: 'earth-layers', year: '2024', medium: 'Ulei pe pânză', size: '90x90cm', image: '/artwork-impasto-1.jpg' },
-  { id: 3, title: 'Bronze Waves', category: 'Impasto', slug: 'bronze-waves', year: '2023', medium: 'Ulei pe pânză', size: '80x120cm', image: '/artwork-impasto-1.jpg' },
-  { id: 4, title: 'Textured Dreams', category: 'Impasto', slug: 'textured-dreams', year: '2023', medium: 'Ulei pe pânză', size: '120x100cm', image: '/artwork-impasto-1.jpg' },
-  { id: 5, title: 'Organic Flow', category: 'Artă Fluidă', slug: 'organic-flow', year: '2023', medium: 'Acrilic pe pânză', size: '80x80cm', image: '/artwork-fluid-1.jpg' },
-  { id: 6, title: 'Liquid Gold', category: 'Artă Fluidă', slug: 'liquid-gold', year: '2024', medium: 'Acrilic pe pânză', size: '100x100cm', image: '/artwork-fluid-1.jpg' },
-  { id: 7, title: 'Flowing Harmony', category: 'Artă Fluidă', slug: 'flowing-harmony', year: '2023', medium: 'Acrilic pe pânză', size: '90x90cm', image: '/artwork-fluid-1.jpg' },
-  { id: 8, title: 'Cosmic Rivers', category: 'Artă Fluidă', slug: 'cosmic-rivers', year: '2024', medium: 'Acrilic pe pânză', size: '100x80cm', image: '/artwork-fluid-1.jpg' },
-  { id: 9, title: 'Abstract Waves', category: 'Artă Fluidă', slug: 'abstract-waves', year: '2023', medium: 'Acrilic pe pânză', size: '80x100cm', image: '/artwork-fluid-1.jpg' },
-];
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { OrnamentalDivider } from "@/components/OrnamentalDivider";
+import { useFadeUpOnScroll } from "@/hooks/useFadeUpOnScroll";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useCmsData } from "@/providers/cms-data-provider";
+import { slugify } from "@/lib/utils";
+import type { Artwork } from "@/lib/cms";
 
 const AbstractArt = () => {
+  const {
+    data: {
+      artLibrary: { artworks },
+    },
+  } = useCmsData();
   const searchParams = useSearchParams();
-  const categoryParam = searchParams?.get('category');
-  const [selectedCategory, setSelectedCategory] = useState('Toate');
-  
+  const router = useRouter();
+  const pathname = usePathname();
+  const categoryParam = searchParams?.get("category");
+  const [selectedCategory, setSelectedCategory] = useState("toate");
+
   useFadeUpOnScroll();
 
-  useEffect(() => {
-    if (categoryParam) {
-      // Convert URL slug to category name
-      const categoryName = slugToCategoryMap[categoryParam];
-      if (categoryName) {
-        setSelectedCategory(categoryName);
-      }
-    } else {
-      setSelectedCategory('Toate');
-    }
-  }, [categoryParam]);
+  const abstractArtworks = useMemo(
+    () =>
+      artworks.filter((art) => art.category.toLowerCase().includes("abstract")),
+    [artworks],
+  );
 
-  const filteredArtworks = selectedCategory === 'Toate' 
-    ? artworks 
-    : artworks.filter(art => art.category === selectedCategory);
+  const categoryFilters = useMemo(() => {
+    const map = new Map<string, string>();
+    abstractArtworks.forEach((art) => {
+      const label = art.style || art.collection || art.category || "Colecție";
+      map.set(slugify(label), label);
+    });
+    return Array.from(map.entries()).map(([slug, name]) => ({ slug, name }));
+  }, [abstractArtworks]);
+
+  useEffect(() => {
+    if (categoryParam && categoryFilters.some((filter) => filter.slug === categoryParam)) {
+      setSelectedCategory(categoryParam);
+    } else {
+      setSelectedCategory("toate");
+    }
+  }, [categoryParam, categoryFilters]);
+
+  const filteredArtworks =
+    selectedCategory === "toate"
+      ? abstractArtworks
+      : abstractArtworks.filter((art) => slugify(art.style || art.collection || "") === selectedCategory);
+
+  const handleCategoryChange = useCallback(
+    (slug: string) => {
+      setSelectedCategory(slug);
+      const params = new URLSearchParams(searchParams?.toString());
+      if (slug === "toate") {
+        params.delete("category");
+      } else {
+        params.set("category", slug);
+      }
+      const query = params.toString();
+      router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    },
+    [pathname, router, searchParams],
+  );
 
   return (
     <div className="min-h-screen">
@@ -69,17 +84,18 @@ const AbstractArt = () => {
             </h1>
             <OrnamentalDivider />
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod
+              Când realitatea trebuie răsucită, o las să se topească în texturi, vibrații și culori
+              care devin hărți ale emoțiilor, urme ale felului în care simt lumea.
             </p>
           </div>
 
           {/* Category Filter */}
           <div className="flex flex-wrap justify-center gap-3 mb-12 fade-up">
-            {categories.map((category) => (
+            {[{ slug: "toate", name: "Toate" }, ...categoryFilters].map((category) => (
               <Button
                 key={category.slug}
-                variant={selectedCategory === category.name ? 'default' : 'outline'}
-                onClick={() => setSelectedCategory(category.name)}
+                variant={selectedCategory === category.slug ? "default" : "outline"}
+                onClick={() => handleCategoryChange(category.slug)}
               >
                 {category.name}
               </Button>
@@ -91,17 +107,21 @@ const AbstractArt = () => {
             {filteredArtworks.map((artwork) => (
               <Link key={artwork.id} href={`/art/${artwork.slug}`}>
                 <Card className="overflow-hidden group cursor-pointer fade-up hover:shadow-lg transition-shadow">
-                  <div className="aspect-square overflow-hidden">
-                    <img
-                      src={artwork.image}
-                      alt={artwork.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  <div className="relative aspect-square overflow-hidden">
+                    <Image
+                      src={artwork.heroImage.src}
+                      alt={artwork.heroImage.alt || artwork.title}
+                      fill
+                      sizes="(max-width:768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div className="p-6">
-                    <p className="text-sm text-muted-foreground mb-2">{artwork.category} • {artwork.year}</p>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {(artwork.style || artwork.collection) + " • " + (artwork.year || "—")}
+                    </p>
                     <h3 className="text-xl font-semibold mb-2">{artwork.title}</h3>
-                    <p className="text-sm text-muted-foreground">{artwork.medium} • {artwork.size}</p>
+                    <p className="text-sm text-muted-foreground">{formatMaterials(artwork)} • {formatDimensions(artwork)}</p>
                   </div>
                 </Card>
               </Link>
@@ -124,3 +144,12 @@ const AbstractArt = () => {
 };
 
 export default AbstractArt;
+
+function formatMaterials(artwork: Artwork) {
+  return artwork.materials.join(", ") || "Mixed media";
+}
+
+function formatDimensions(artwork: Artwork) {
+  const { width, height, unit } = artwork.dimensions;
+  return `${width}x${height}${unit}`;
+}
