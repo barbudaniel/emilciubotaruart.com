@@ -250,11 +250,9 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
             )}
           </div>
 
-          <div className="mt-20 fade-up">
-            <h2 className="text-3xl font-bold mb-8">Lucrări similare</h2>
-            {relatedArtworks.length === 0 ? (
-              <p className="text-muted-foreground">Nu există încă lucrări similare configurate.</p>
-            ) : (
+          {relatedArtworks.length > 0 && (
+            <div className="mt-20 fade-up">
+              <h2 className="text-3xl font-bold mb-8">Lucrări similare</h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {relatedArtworks.map((art) => (
                   <Link key={art.id} href={`/art/${art.slug}`}>
@@ -270,8 +268,8 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
                   </Link>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -382,22 +380,45 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
 export default ArtDetail;
 
 function getRelatedArtworks(artwork: Artwork, artworks: Artwork[]) {
-  if (artwork.related.mode === "manual" && artwork.related.manualIds.length > 0) {
-    return artwork.related.manualIds
-      .map((id) => artworks.find((candidate) => candidate.id === id))
-      .filter((candidate): candidate is Artwork => Boolean(candidate));
+  // 1. Get manually selected artworks
+  const manualRelated = artwork.related.manualIds
+    .map((id) => artworks.find((candidate) => candidate.id === id))
+    .filter((candidate): candidate is Artwork => Boolean(candidate));
+
+  // If we have enough manual recommendations (e.g., 3 or more), return them
+  if (manualRelated.length >= 3) {
+    return manualRelated.slice(0, 3);
   }
 
+  // 2. Get auto recommendations (same collection or category)
   const autoTags = artwork.related.autoTags.map((tag) => tag.toLowerCase());
-  return artworks
-    .filter(
-      (candidate) =>
-        candidate.id !== artwork.id &&
-        (candidate.collection === artwork.collection ||
-          candidate.style === artwork.style ||
-          autoTags.some((tag) => candidate.collection?.toLowerCase().includes(tag) || candidate.style?.toLowerCase().includes(tag))),
-    )
-    .slice(0, 3);
+  const autoRelated = artworks.filter((candidate) => {
+    // Exclude current artwork
+    if (candidate.id === artwork.id) return false;
+    
+    // Exclude already selected manual artworks
+    if (manualRelated.some((m) => m.id === candidate.id)) return false;
+
+    // Check similarity criteria
+    return (
+      candidate.collection === artwork.collection ||
+      candidate.category === artwork.category ||
+      autoTags.some((tag) => candidate.collection?.toLowerCase().includes(tag) || candidate.style?.toLowerCase().includes(tag))
+    );
+  });
+
+  // 3. Combine manual + auto to fill up to 3 items
+  const combined = [...manualRelated, ...autoRelated].slice(0, 3);
+
+  // 4. Fallback: If still empty, consider showing recent artworks from same collection or category (broad match)
+  if (combined.length === 0) {
+     const otherArtworks = artworks
+      .filter(a => a.id !== artwork.id && a.collection === artwork.collection)
+      .slice(0, 3);
+     return otherArtworks;
+  }
+
+  return combined;
 }
 
 function formatPrice(amount: number, currencyCode = "EUR") {
