@@ -82,8 +82,8 @@ const rawData = {
         id: "social-instagram",
         platform: "Instagram",
         label: "Instagram",
-        url: "https://instagram.com/emil.ciubotaru",
-        handle: "@emil.ciubotaru",
+        url: "https://instagram.com/emilciubotaru16art",
+        handle: "@emilciubotaru16art",
         isVisible: true,
       },
       {

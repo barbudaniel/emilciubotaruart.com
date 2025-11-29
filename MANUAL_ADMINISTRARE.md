@@ -169,12 +169,3 @@ Această secțiune centralizează mesajele primite prin formularul de contact.
     *   `Răspuns` (Marchează că ați trimis reply)
     *   `Arhivat`
 *   **Notițe Interne**: Puteți adăuga observații private la fiecare mesaj (ex: "De revenit cu ofertă în toamnă").
-
----
-
-## Sfaturi pentru Administrare
-
-1.  **Optimizare Imagini**: Pentru performanța site-ului, încercați să încărcați imagini optimizate (format WebP sau JPG comprimat), ideal sub 500KB pentru imagini mari și sub 200KB pentru cele mici.
-2.  **SEO**: Completați câmpurile de descriere și titlu cu atenție, folosind cuvinte cheie relevante pentru artă și numele artistului.
-3.  **Backup**: Deși site-ul are o bază de date sigură, este recomandat să păstrați copii locale ale textelor importante și imaginilor originale ale lucrărilor.
-
