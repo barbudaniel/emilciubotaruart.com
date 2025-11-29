@@ -1,22 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 export const useFadeUpOnScroll = () => {
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+            entry.target.classList.add("visible");
           }
         });
       },
       {
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px',
+        rootMargin: "0px 0px -50px 0px",
       }
     );
 
-    const elements = document.querySelectorAll('.fade-up');
+    const elements = document.querySelectorAll(".fade-up");
     elements.forEach((el) => observer.observe(el));
 
     return () => {
