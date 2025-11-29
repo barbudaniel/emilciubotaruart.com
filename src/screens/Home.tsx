@@ -205,7 +205,7 @@ const Home = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="fade-up relative aspect-square">
+            <div className="fade-up relative aspect-[3/4]">
               {aboutImageBlock?.media ? (
                 <Image src={aboutImageBlock.media.src} alt={aboutImageBlock.media.alt || aboutImageBlock.title} fill className="rounded-lg shadow-soft object-cover" />
               ) : (

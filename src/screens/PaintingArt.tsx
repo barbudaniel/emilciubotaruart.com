@@ -11,6 +11,7 @@ import { OrnamentalDivider } from "@/components/OrnamentalDivider";
 import { useFadeUpOnScroll } from "@/hooks/useFadeUpOnScroll";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useCmsData } from "@/providers/cms-data-provider";
 import { slugify } from "@/lib/utils";
 import type { Artwork } from "@/lib/cms";
@@ -106,7 +107,19 @@ const PaintingArt = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredArtworks.map((artwork) => (
               <Link key={artwork.id} href={`/art/${artwork.slug}`}>
-                <Card className="overflow-hidden group cursor-pointer fade-up hover:shadow-lg transition-shadow">
+                <Card className="overflow-hidden group cursor-pointer fade-up hover:shadow-lg transition-shadow relative">
+                  <div className="absolute top-3 right-3 z-20 flex gap-2">
+                    {artwork.pricing?.availabilityStatus === "sold" && (
+                      <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm shadow-sm">
+                        Vândut
+                      </Badge>
+                    )}
+                    {artwork.pricing?.availabilityStatus === "on_command" && (
+                      <Badge variant="outline" className="bg-background/80 backdrop-blur-sm shadow-sm border-primary text-primary">
+                        La comandă
+                      </Badge>
+                    )}
+                  </div>
                   <div className="relative aspect-square overflow-hidden">
                     <Image
                       src={artwork.heroImage.src}

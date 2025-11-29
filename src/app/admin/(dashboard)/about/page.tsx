@@ -8,7 +8,7 @@ export default function AboutPage() {
   return (
     <>
       <AdminHeader 
-        title="Despre Artist" 
+        title="About Emil Ciubotaru" 
         subtitle="Editează biografia și imaginea de profil."
         actions={<AdminPageActions />}
       />

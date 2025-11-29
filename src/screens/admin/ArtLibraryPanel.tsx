@@ -371,62 +371,66 @@ export const ArtLibraryPanel = () => {
                       <div className="grid gap-4 md:grid-cols-3">
                         <div>
                           <label className="text-sm font-medium text-muted-foreground">Sumă</label>
-                          <Input
-                            type="number"
-                            value={artwork.pricing?.amount || ""}
-                            onChange={(event) =>
-                              handleArtChange(artwork.id, {
-                                pricing: {
-                                  amount: Number(event.target.value),
-                                  currency: artwork.pricing?.currency || "EUR",
-                                  isAvailable: artwork.pricing?.isAvailable ?? true,
-                                  notes: artwork.pricing?.notes || "",
-                                },
-                              })
-                            }
-                            placeholder="0"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground">Monedă</label>
-                          <Select
-                            value={artwork.pricing?.currency || "EUR"}
-                            onValueChange={(value) =>
-                              handleArtChange(artwork.id, {
-                                pricing: {
-                                  amount: artwork.pricing?.amount || 0,
-                                  currency: value,
-                                  isAvailable: artwork.pricing?.isAvailable ?? true,
-                                  notes: artwork.pricing?.notes || "",
-                                },
-                              })
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="EUR">EUR</SelectItem>
-                              <SelectItem value="RON">RON</SelectItem>
-                              <SelectItem value="USD">USD</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground">Disponibil</label>
-                          <Select
-                            value={(artwork.pricing?.isAvailable ?? true) ? "true" : "false"}
-                            onValueChange={(value) =>
-                              handleArtChange(artwork.id, {
-                                pricing: {
-                                  amount: artwork.pricing?.amount || 0,
-                                  currency: artwork.pricing?.currency || "EUR",
-                                  isAvailable: value === "true",
-                                  notes: artwork.pricing?.notes || "",
-                                },
-                              })
-                            }
-                          >
+                            <Input
+                              type="number"
+                              value={artwork.pricing?.amount || ""}
+                              onChange={(event) =>
+                                handleArtChange(artwork.id, {
+                                  pricing: {
+                                    amount: Number(event.target.value),
+                                    currency: artwork.pricing?.currency || "EUR",
+                                    isAvailable: artwork.pricing?.isAvailable ?? true,
+                                    availabilityStatus: artwork.pricing?.availabilityStatus || "available",
+                                    notes: artwork.pricing?.notes || "",
+                                  },
+                                })
+                              }
+                              placeholder="0"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-muted-foreground">Monedă</label>
+                            <Select
+                              value={artwork.pricing?.currency || "EUR"}
+                              onValueChange={(value) =>
+                                handleArtChange(artwork.id, {
+                                  pricing: {
+                                    amount: artwork.pricing?.amount || 0,
+                                    currency: value,
+                                    isAvailable: artwork.pricing?.isAvailable ?? true,
+                                    availabilityStatus: artwork.pricing?.availabilityStatus || "available",
+                                    notes: artwork.pricing?.notes || "",
+                                  },
+                                })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="EUR">EUR</SelectItem>
+                                <SelectItem value="RON">RON</SelectItem>
+                                <SelectItem value="USD">USD</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-muted-foreground">Disponibil</label>
+                            <p className="text-xs text-muted-foreground mb-2">Setarea globală de vizibilitate a prețului</p>
+                            <Select
+                              value={(artwork.pricing?.isAvailable ?? true) ? "true" : "false"}
+                              onValueChange={(value) =>
+                                handleArtChange(artwork.id, {
+                                  pricing: {
+                                    amount: artwork.pricing?.amount || 0,
+                                    currency: artwork.pricing?.currency || "EUR",
+                                    isAvailable: value === "true",
+                                    availabilityStatus: artwork.pricing?.availabilityStatus || "available",
+                                    notes: artwork.pricing?.notes || "",
+                                  },
+                                })
+                              }
+                            >
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
@@ -436,25 +440,52 @@ export const ArtLibraryPanel = () => {
                             </SelectContent>
                           </Select>
                         </div>
+                        <div>
+                          <label className="text-sm font-medium text-muted-foreground">Status Disponibilitate</label>
+                          <Select
+                            value={artwork.pricing?.availabilityStatus || "available"}
+                            onValueChange={(value) =>
+                              handleArtChange(artwork.id, {
+                                pricing: {
+                                  amount: artwork.pricing?.amount || 0,
+                                  currency: artwork.pricing?.currency || "EUR",
+                                  isAvailable: artwork.pricing?.isAvailable ?? true,
+                                  availabilityStatus: value as "available" | "on_command" | "sold",
+                                  notes: artwork.pricing?.notes || "",
+                                },
+                              })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="available">Disponibil</SelectItem>
+                              <SelectItem value="on_command">La comandă</SelectItem>
+                              <SelectItem value="sold">Vândut</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                       <div>
                         <label className="text-sm font-medium text-muted-foreground">Note preț</label>
-                        <Input
-                          value={artwork.pricing?.notes || ""}
-                          onChange={(event) =>
-                            handleArtChange(artwork.id, {
-                              pricing: {
-                                amount: artwork.pricing?.amount || 0,
-                                currency: artwork.pricing?.currency || "EUR",
-                                isAvailable: artwork.pricing?.isAvailable ?? true,
-                                notes: event.target.value,
-                              },
-                            })
-                          }
-                          placeholder="ex: Include rama personalizată"
-                        />
-                      </div>
-                    </div>
+                            <Input
+                              value={artwork.pricing?.notes || ""}
+                              onChange={(event) =>
+                                handleArtChange(artwork.id, {
+                                  pricing: {
+                                    amount: artwork.pricing?.amount || 0,
+                                    currency: artwork.pricing?.currency || "EUR",
+                                    isAvailable: artwork.pricing?.isAvailable ?? true,
+                                    availabilityStatus: artwork.pricing?.availabilityStatus || "available",
+                                    notes: event.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="ex: Include rama personalizată"
+                            />
+                          </div>
+                        </div>
 
                     <Separator />
 

@@ -160,9 +160,36 @@ const rawData = {
       },
     },
     about: {
-      headline: "Despre Artist",
-      summary:
-        "Sunt Emil Ciubotaru, iar culoarea este felul în care respir. Transform emoțiile în povestiri pictate.",
+      headline: "About Emil Ciubotaru",
+      summary: "Sunt Emil Ciubotaru, iar culoarea este felul în care respir. Transform emoțiile în povestiri pictate.",
+      content: `Hei, bună,
+
+Sunt Emil Ciubotaru, un artist, iar pentru mine culoarea este felul în care
+respir. Îmi scriu gândurile în culori pe pânză, cu tușe dense, uneori blânde, alteori
+neastâmpărate, ca și cum fiecare lucrare ar fi o mărturisire pe care n-am spus-o
+niciodată cu voce tare.
+
+Pictez florile care nu mor niciodată, anotimpurile care trec prin mine mai des
+decât prin calendar și orașele în care lumina se prelinge pe clădiri ca o amintire
+caldă. Uneori, las realitatea să vorbească. Alteori, o răsucesc, o tulbur, o
+transform în abstracții care poartă urme de suflet și tăceri colorate.
+
+Pensula și cuțitul de paletă sunt prelungirea mâinii mele. În urma lor rămân
+straturi groase, reliefuri, vibrații, urme ale felului în care simt lumea. Fiecare
+culoare pe care o așez este o poveste scurtă, iar fiecare lucrare este o întâmplare
+trăită cândva, poate de mine, poate de tine.
+
+Pictura este felul meu de a pune ordine în emoții și de a da formă lucrurilor
+care nu se lasă rostite.
+
+Dacă un tablou de-al meu te face să te oprești o clipă, să respiri altfel sau
+să-ți amintești ceva ce credeai că ai pierdut, atunci arta mea și-a găsit drumul ei.`,
+      image: {
+        id: "about-hero-image",
+        type: "image",
+        src: "/portrait.jpg",
+        alt: "Emil Ciubotaru"
+      },
       blocks: [],
     },
     sections: [

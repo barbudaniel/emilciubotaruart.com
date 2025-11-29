@@ -15,10 +15,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useFadeUpOnScroll } from "@/hooks/useFadeUpOnScroll";
-import { useCmsData } from "@/providers/cms-data-provider";
-import type { Artwork, MediaAsset } from "@/lib/cms";
+import { Badge } from "@/components/ui/badge";
 
 interface ArtDetailProps {
   slug: string;
@@ -86,6 +83,17 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
     artwork.pricing?.amount && artwork.pricing.isAvailable
       ? formatPrice(artwork.pricing.amount, artwork.pricing.currency)
       : artwork.pricing?.notes || "Disponibil la cerere";
+
+  const getStatusBadge = () => {
+    const status = artwork.pricing?.availabilityStatus || "available";
+    if (status === "sold") {
+      return <Badge variant="secondary" className="ml-2">Vândut</Badge>;
+    }
+    if (status === "on_command") {
+      return <Badge variant="outline" className="ml-2 border-primary text-primary">La comandă</Badge>;
+    }
+    return null;
+  };
 
   const handleShare = async (platform: "facebook" | "linkedin" | "instagram" | "copy") => {
     if (platform === "copy") {
@@ -190,7 +198,10 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Preț</p>
-                  <p className="text-2xl font-bold text-primary">{priceLabel}</p>
+                  <div className="flex items-center">
+                     <p className="text-2xl font-bold text-primary">{priceLabel}</p>
+                     {getStatusBadge()}
+                  </div>
                 </div>
               </div>
 

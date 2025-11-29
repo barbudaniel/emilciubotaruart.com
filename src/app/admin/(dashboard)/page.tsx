@@ -4,3 +4,4 @@ export default function AdminDashboardIndex() {
   redirect("/admin/artworks");
 }
 
+

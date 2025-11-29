@@ -100,7 +100,9 @@ export const aboutBlockSchema = z.object({
 export const aboutSchema = z.object({
   headline: z.string(),
   summary: z.string(),
-  blocks: z.array(aboutBlockSchema),
+  content: z.string().default(""),
+  image: mediaAssetSchema.optional(),
+  blocks: z.array(aboutBlockSchema).default([]),
 });
 
 export const homepageSectionSchema = z.object({
@@ -160,6 +162,7 @@ export const artworkSchema = z.object({
       amount: z.number(),
       currency: z.string().default("EUR"),
       isAvailable: z.boolean().default(true),
+      availabilityStatus: z.enum(["available", "on_command", "sold"]).default("available"),
       notes: z.string().optional(),
     })
     .optional(),

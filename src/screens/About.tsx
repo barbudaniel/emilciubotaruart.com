@@ -8,29 +8,6 @@ import { OrnamentalDivider } from "@/components/OrnamentalDivider";
 import { useFadeUpOnScroll } from "@/hooks/useFadeUpOnScroll";
 import { useCmsData } from "@/providers/cms-data-provider";
 
-const biography = `Hei, bună,
-
-Sunt Emil Ciubotaru, un artist, iar pentru mine culoarea este felul în care
-respir. Îmi scriu gândurile în culori pe pânză, cu tușe dense, uneori blânde, alteori
-neastâmpărate, ca și cum fiecare lucrare ar fi o mărturisire pe care n-am spus-o
-niciodată cu voce tare.
-
-Pictez florile care nu mor niciodată, anotimpurile care trec prin mine mai des
-decât prin calendar și orașele în care lumina se prelinge pe clădiri ca o amintire
-caldă. Uneori, las realitatea să vorbească. Alteori, o răsucesc, o tulbur, o
-transform în abstracții care poartă urme de suflet și tăceri colorate.
-
-Pensula și cuțitul de paletă sunt prelungirea mâinii mele. În urma lor rămân
-straturi groase, reliefuri, vibrații, urme ale felului în care simt lumea. Fiecare
-culoare pe care o așez este o poveste scurtă, iar fiecare lucrare este o întâmplare
-trăită cândva, poate de mine, poate de tine.
-
-Pictura este felul meu de a pune ordine în emoții și de a da formă lucrurilor
-care nu se lasă rostite.
-
-Dacă un tablou de-al meu te face să te oprești o clipă, să respiri altfel sau
-să-ți amintești ceva ce credeai că ai pierdut, atunci arta mea și-a găsit drumul ei.`;
-
 const About = () => {
   useFadeUpOnScroll();
   const {
@@ -39,21 +16,10 @@ const About = () => {
     },
   } = useCmsData();
 
-  const heroBlock = about.blocks.find((block) => block.media);
-  const paragraphs = biography.split("\n").reduce<string[]>((acc, line) => {
-    const value = line.trim();
-    if (!value) {
-      acc.push("");
-      return acc;
-    }
-    const lastIndex = acc.length - 1;
-    if (lastIndex >= 0 && acc[lastIndex]) {
-      acc[lastIndex] = `${acc[lastIndex]} ${value}`.trim();
-    } else {
-      acc.push(value);
-    }
-    return acc;
-  }, []).filter(Boolean);
+  // Split by double newline to create paragraphs, but preserve single newlines if desired or just let css handle it.
+  // Using whitespace-pre-line on the paragraph element is the simplest way to respect the textarea content.
+  // However, for better spacing between distinct blocks of text, we can split by double newlines.
+  const paragraphs = (about.content || "").split(/\n\s*\n/).filter(p => p.trim());
 
   return (
     <div className="min-h-screen">
@@ -63,20 +29,40 @@ const About = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-12 space-y-16">
           <section className="grid gap-12 lg:grid-cols-[3fr_2fr] items-start fade-up">
             <div className="space-y-6 text-lg leading-relaxed text-muted-foreground">
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-wide">Despre Emil Ciubotaru</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-wide">
+                {about.headline || "About Emil Ciubotaru"}
+              </h1>
               <OrnamentalDivider />
-              {paragraphs.map((paragraph, index) => (
-                <p key={index} className="whitespace-pre-line">
-                  {paragraph}
+              
+              {about.summary && (
+                <p className="text-xl font-medium text-foreground">
+                  {about.summary}
                 </p>
-              ))}
+              )}
+
+              <div className="space-y-6">
+                {paragraphs.map((paragraph, index) => (
+                  <p key={index} className="whitespace-pre-line">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-6">
               <div className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl border bg-muted">
-                {heroBlock?.media ? (
-                  <Image src={heroBlock.media.src} alt={heroBlock.media.alt || heroBlock.title} fill className="object-cover" />
-                ) : null}
+                {about.image?.src ? (
+                  <Image 
+                    src={about.image.src} 
+                    alt={about.image.alt || about.headline || "Artist Portrait"} 
+                    fill 
+                    className="object-cover" 
+                  />
+                ) : (
+                  <div className="h-full w-full bg-muted flex items-center justify-center">
+                    <span className="text-muted-foreground">Fără imagine profil</span>
+                  </div>
+                )}
               </div>
             </div>
           </section>
