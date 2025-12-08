@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 export const useFadeUpOnScroll = () => {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const observeElements = useCallback(() => {
+    if (typeof window === "undefined") return () => {};
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -18,11 +18,30 @@ export const useFadeUpOnScroll = () => {
       }
     );
 
-    const elements = document.querySelectorAll(".fade-up");
+    const elements = document.querySelectorAll(".fade-up:not(.visible)");
     elements.forEach((el) => observer.observe(el));
 
     return () => {
       elements.forEach((el) => observer.unobserve(el));
     };
   }, []);
+
+  useEffect(() => {
+    const cleanup = observeElements();
+    
+    // Use MutationObserver to watch for new elements being added
+    const mutationObserver = new MutationObserver(() => {
+      observeElements();
+    });
+    
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      cleanup();
+      mutationObserver.disconnect();
+    };
+  }, [observeElements]);
 };

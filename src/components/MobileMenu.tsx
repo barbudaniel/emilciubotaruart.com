@@ -8,13 +8,16 @@ import { ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCmsData } from "@/providers/cms-data-provider";
 import type { NavigationItem } from "@/lib/cms";
+import { slugify } from "@/lib/utils";
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  paintingCategories: Set<string>;
+  abstractCategories: Set<string>;
 }
 
-export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
+export const MobileMenu = ({ isOpen, onClose, paintingCategories, abstractCategories }: MobileMenuProps) => {
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const pathname = usePathname();
   const {
@@ -90,23 +93,31 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         {/* Menu Items */}
         <nav className="p-4">
           <div className="flex flex-col gap-1">
-            {navigation.map((item) =>
-              item.children.length ? (
-                <MobileDropdown
-                  key={item.id}
-                  item={item}
-                  isOpen={Boolean(openItems[item.id])}
-                  onToggle={() =>
-                    setOpenItems((prev) => ({
-                      ...prev,
-                      [item.id]: !prev[item.id],
-                    }))
-                  }
-                />
-              ) : (
-                <MobileNavLink key={item.id} item={item} />
-              ),
-            )}
+            {navigation.map((item) => {
+              if (item.children.length) {
+                // Filter children to only show subcategories with artworks
+                const categoriesWithArt = item.href.includes("abstract") ? abstractCategories : paintingCategories;
+                const filteredChildren = item.children.filter((child) => 
+                  categoriesWithArt.has(slugify(child.label))
+                );
+                
+                return (
+                  <MobileDropdown
+                    key={item.id}
+                    item={item}
+                    filteredChildren={filteredChildren}
+                    isOpen={Boolean(openItems[item.id])}
+                    onToggle={() =>
+                      setOpenItems((prev) => ({
+                        ...prev,
+                        [item.id]: !prev[item.id],
+                      }))
+                    }
+                  />
+                );
+              }
+              return <MobileNavLink key={item.id} item={item} />;
+            })}
           </div>
         </nav>
       </div>
@@ -134,10 +145,12 @@ const MobileNavLink = ({ item, className = "" }: { item: NavigationItem; classNa
 
 const MobileDropdown = ({
   item,
+  filteredChildren,
   isOpen,
   onToggle,
 }: {
   item: NavigationItem;
+  filteredChildren: NavigationItem[];
   isOpen: boolean;
   onToggle: () => void;
 }) => (
@@ -154,7 +167,7 @@ const MobileDropdown = ({
     {isOpen && (
       <div id={`${item.id}-submenu`} className="ml-4 mt-1 flex flex-col gap-1">
         <MobileNavLink item={item} className="px-4 py-2 text-sm" />
-        {item.children.map((child: NavigationItem) => (
+        {filteredChildren.map((child: NavigationItem) => (
           <MobileNavLink key={child.id} item={child} className="px-4 py-2 text-sm" />
         ))}
       </div>

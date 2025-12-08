@@ -30,33 +30,43 @@ const PaintingArt = () => {
 
   useFadeUpOnScroll();
 
+  // Filter artworks that belong to "Artă Pictură" collection (not abstract)
   const paintingArtworks = useMemo(
     () =>
-      artworks.filter((art) => !art.category.toLowerCase().includes("abstract")),
+      artworks.filter((art) => {
+        const collectionLower = art.collection?.toLowerCase() || "";
+        // Include if collection is "Artă Pictură" or doesn't contain "abstract"
+        return collectionLower.includes("pictur") || (!collectionLower.includes("abstract") && !art.category?.toLowerCase().includes("abstract"));
+      }),
     [artworks],
   );
 
+  // Build category filters from artworks that exist (only show subcategories with artworks)
   const categoryFilters = useMemo(() => {
     const map = new Map<string, string>();
     paintingArtworks.forEach((art) => {
-      const label = art.collection || art.category || art.style || "Colecție";
-      map.set(slugify(label), label);
+      // Use `category` for subcategory filtering (matches navigation children)
+      const label = art.category || art.style || art.collection || "Colecție";
+      if (label) {
+        map.set(slugify(label), label);
+      }
     });
     return Array.from(map.entries()).map(([slug, name]) => ({ slug, name }));
   }, [paintingArtworks]);
 
   useEffect(() => {
-    if (categoryParam && categoryFilters.some((filter) => filter.slug === categoryParam)) {
+    // Use the category from URL directly, or "toate" if no category parameter
+    if (categoryParam) {
       setSelectedCategory(categoryParam);
     } else {
       setSelectedCategory("toate");
     }
-  }, [categoryParam, categoryFilters]);
+  }, [categoryParam]);
 
   const filteredArtworks =
     selectedCategory === "toate"
       ? paintingArtworks
-      : paintingArtworks.filter((art) => slugify(art.collection || art.style || "") === selectedCategory);
+      : paintingArtworks.filter((art) => slugify(art.category || art.style || "") === selectedCategory);
 
   const handleCategoryChange = useCallback(
     (slug: string) => {
@@ -131,7 +141,7 @@ const PaintingArt = () => {
                   </div>
                   <div className="p-6">
                     <p className="text-sm text-muted-foreground mb-2">
-                      {(artwork.collection || artwork.category) + " • " + (artwork.year || "—")}
+                      {(artwork.category || artwork.collection) + " • " + (artwork.year || "—")}
                     </p>
                     <h3 className="text-xl font-semibold mb-2">{artwork.title}</h3>
                     <p className="text-sm text-muted-foreground">

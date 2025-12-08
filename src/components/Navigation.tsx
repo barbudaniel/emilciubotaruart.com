@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, ChevronDown } from "lucide-react";
@@ -9,8 +9,31 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { useCmsData } from "@/providers/cms-data-provider";
-import type { NavigationItem } from "@/lib/cms";
+import type { NavigationItem, Artwork } from "@/lib/cms";
+import { slugify } from "@/lib/utils";
 import { MobileMenu } from "./MobileMenu";
+
+// Helper to check if a subcategory has artworks
+const getSubcategoriesWithArtworks = (artworks: Artwork[], parentHref: string) => {
+  const isAbstract = parentHref.includes("abstract");
+  const filteredArtworks = artworks.filter((art) => {
+    const collectionLower = art.collection?.toLowerCase() || "";
+    if (isAbstract) {
+      return collectionLower.includes("abstract");
+    }
+    return collectionLower.includes("pictur") || (!collectionLower.includes("abstract") && !art.category?.toLowerCase().includes("abstract"));
+  });
+  
+  const categoriesWithArt = new Set<string>();
+  filteredArtworks.forEach((art) => {
+    const category = art.category || art.style;
+    if (category) {
+      categoriesWithArt.add(slugify(category));
+    }
+  });
+  
+  return categoriesWithArt;
+};
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,8 +43,13 @@ export const Navigation = () => {
   const {
     data: {
       siteIdentity: { logo, navigation },
+      artLibrary: { artworks },
     },
   } = useCmsData();
+  
+  // Get categories that have artworks for filtering nav items
+  const paintingCategories = useMemo(() => getSubcategoriesWithArtworks(artworks, "/painting-art"), [artworks]);
+  const abstractCategories = useMemo(() => getSubcategoriesWithArtworks(artworks, "/abstract-art"), [artworks]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,13 +86,25 @@ export const Navigation = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-8">
-              {navigation.map((item) =>
-                item.children.length > 0 ? (
-                  <DesktopDropdown key={item.id} item={item} useLightStyle={useLightStyle} />
-                ) : (
-                  <DesktopLink key={item.id} item={item} useLightStyle={useLightStyle} />
-                ),
-              )}
+              {navigation.map((item) => {
+                if (item.children.length > 0) {
+                  // Filter children to only show subcategories with artworks
+                  const categoriesWithArt = item.href.includes("abstract") ? abstractCategories : paintingCategories;
+                  const filteredChildren = item.children.filter((child) => 
+                    categoriesWithArt.has(slugify(child.label))
+                  );
+                  
+                  return (
+                    <DesktopDropdown 
+                      key={item.id} 
+                      item={item} 
+                      filteredChildren={filteredChildren}
+                      useLightStyle={useLightStyle} 
+                    />
+                  );
+                }
+                return <DesktopLink key={item.id} item={item} useLightStyle={useLightStyle} />;
+              })}
             </div>
 
             {/* Mobile Menu Button */}
@@ -83,7 +123,12 @@ export const Navigation = () => {
         </div>
       </nav>
 
-      <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <MobileMenu 
+        isOpen={isOpen} 
+        onClose={() => setIsOpen(false)} 
+        paintingCategories={paintingCategories}
+        abstractCategories={abstractCategories}
+      />
     </>
   );
 };
@@ -108,7 +153,7 @@ const DesktopLink = ({ item, useLightStyle }: { item: NavigationItem; useLightSt
   );
 };
 
-const DesktopDropdown = ({ item, useLightStyle }: { item: NavigationItem; useLightStyle: boolean }) => (
+const DesktopDropdown = ({ item, filteredChildren, useLightStyle }: { item: NavigationItem; filteredChildren: NavigationItem[]; useLightStyle: boolean }) => (
   <div className="relative group">
     <button
       className={`text-sm tracking-wider uppercase font-medium transition-colors flex items-center gap-1 ${
@@ -123,7 +168,7 @@ const DesktopDropdown = ({ item, useLightStyle }: { item: NavigationItem; useLig
       <NavDropdownLink item={item} className="border-b border-border">
         Vezi Tot
       </NavDropdownLink>
-      {item.children.map((child) => (
+      {filteredChildren.map((child) => (
         <NavDropdownLink key={child.id} item={child}>
           {child.label}
         </NavDropdownLink>

@@ -46,7 +46,7 @@ const rawData = {
         highlight: false,
         children: [
           { id: "nav-abstract-1", label: "Impasto", href: "/abstract-art?category=impasto", isExternal: false, highlight: false, children: [] },
-          { id: "nav-abstract-2", label: "Artă Fluidă", href: "/abstract-art?category=fluid-art", isExternal: false, highlight: false, children: [] },
+          { id: "nav-abstract-2", label: "Artă Fluidă", href: "/abstract-art?category=arta-fluida", isExternal: false, highlight: false, children: [] },
         ],
       },
       {

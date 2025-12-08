@@ -29,33 +29,43 @@ const AbstractArt = () => {
 
   useFadeUpOnScroll();
 
+  // Filter artworks that belong to "Artă Abstractă" collection
   const abstractArtworks = useMemo(
     () =>
-      artworks.filter((art) => art.category.toLowerCase().includes("abstract")),
+      artworks.filter((art) => {
+        const collectionLower = art.collection?.toLowerCase() || "";
+        // Include if collection contains "abstract"
+        return collectionLower.includes("abstract");
+      }),
     [artworks],
   );
 
+  // Build category filters from artworks that exist (only show subcategories with artworks)
   const categoryFilters = useMemo(() => {
     const map = new Map<string, string>();
     abstractArtworks.forEach((art) => {
-      const label = art.style || art.collection || art.category || "Colecție";
-      map.set(slugify(label), label);
+      // Use `category` for subcategory filtering (matches navigation children)
+      const label = art.category || art.style || art.collection || "Colecție";
+      if (label) {
+        map.set(slugify(label), label);
+      }
     });
     return Array.from(map.entries()).map(([slug, name]) => ({ slug, name }));
   }, [abstractArtworks]);
 
   useEffect(() => {
-    if (categoryParam && categoryFilters.some((filter) => filter.slug === categoryParam)) {
+    // Use the category from URL directly, or "toate" if no category parameter
+    if (categoryParam) {
       setSelectedCategory(categoryParam);
     } else {
       setSelectedCategory("toate");
     }
-  }, [categoryParam, categoryFilters]);
+  }, [categoryParam]);
 
   const filteredArtworks =
     selectedCategory === "toate"
       ? abstractArtworks
-      : abstractArtworks.filter((art) => slugify(art.style || art.collection || "") === selectedCategory);
+      : abstractArtworks.filter((art) => slugify(art.category || art.style || "") === selectedCategory);
 
   const handleCategoryChange = useCallback(
     (slug: string) => {
@@ -118,7 +128,7 @@ const AbstractArt = () => {
                   </div>
                   <div className="p-6">
                     <p className="text-sm text-muted-foreground mb-2">
-                      {(artwork.style || artwork.collection) + " • " + (artwork.year || "—")}
+                      {(artwork.category || artwork.style || artwork.collection) + " • " + (artwork.year || "—")}
                     </p>
                     <h3 className="text-xl font-semibold mb-2">{artwork.title}</h3>
                     <p className="text-sm text-muted-foreground">{formatMaterials(artwork)} • {formatDimensions(artwork)}</p>
