@@ -90,8 +90,8 @@ const rawData = {
         id: "social-facebook",
         platform: "Facebook",
         label: "Facebook",
-        url: "https://facebook.com/emilciubotaruart",
-        handle: "emilciubotaruart",
+        url: "https://facebook.com/ciubotaruemil16",
+        handle: "ciubotaruemciubotaruemil16il16",
         isVisible: true,
       },
       {
