@@ -96,6 +96,9 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
     if (status === "on_command") {
       return <Badge variant="outline" className="ml-2 border-primary text-primary">La comandă</Badge>;
     }
+    if (status === "available") {
+      return <Badge variant="outline" className="ml-2 border-primary text-primary">Disponibil</Badge>;
+    }
     return null;
   };
 
