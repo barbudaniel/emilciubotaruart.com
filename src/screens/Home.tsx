@@ -91,11 +91,15 @@ const Home = () => {
                 <h2 className="text-3xl font-bold mt-3 mb-4">{section.title}</h2>
                 <p className="text-muted-foreground whitespace-pre-line">{section.description || section.manualContent}</p>
               </div>
-              <div className="flex flex-col gap-4">
-                <Input placeholder="Email" disabled value="atelier@emilciubotaru.com" />
-                <Button size="lg" className="w-full">
-                  {section.manualContent || "Scrie-mi un mesaj"}
-                </Button>
+              <div className="flex flex-col gap-4 items-center justify-center text-center">
+                <p className="text-muted-foreground">
+                  Completează formularul de contact și voi reveni cu un răspuns în cel mai scurt timp.
+                </p>
+                <Link href="/contact">
+                  <Button size="lg" className="px-8">
+                    Trimite un mesaj
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
