@@ -199,56 +199,19 @@ export const ArtLibraryPanel = () => {
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="text-sm font-medium text-muted-foreground">Colecție</label>
-            <Select
+            <Input
               value={artwork.collection || ""}
-              onValueChange={(value) => {
-                const categories = getCategoriesForCollection(value);
-                const nextCategory = categories.includes(artwork.category) ? artwork.category : categories[0] || "";
-                handleArtChange(artwork.id, { collection: value, category: nextCategory });
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={allCollectionOptions.length === 0 ? "Configurează colecțiile în Navigare" : "Selectează colecția"} />
-              </SelectTrigger>
-              <SelectContent>
-                {allCollectionOptions.length === 0 ? (
-                  <SelectItem value="__no_collection__" disabled>
-                    Nicio colecție disponibilă
-                  </SelectItem>
-                ) : (
-                  allCollectionOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+              onChange={(event) => handleArtChange(artwork.id, { collection: event.target.value })}
+              placeholder="ex: Pictură, Artă Abstractă"
+            />
           </div>
           <div>
             <label className="text-sm font-medium text-muted-foreground">Categorie</label>
-            <Select
+            <Input
               value={artwork.category || ""}
-              onValueChange={(value) => handleArtChange(artwork.id, { category: value })}
-              disabled={getCategoriesForCollection(artwork.collection).length === 0}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selectează categoria" />
-              </SelectTrigger>
-              <SelectContent>
-                {getCategoriesForCollection(artwork.collection).length === 0 ? (
-                  <SelectItem value="__no_category__" disabled>
-                    Nicio categorie
-                  </SelectItem>
-                ) : (
-                  getCategoriesForCollection(artwork.collection).map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+              onChange={(event) => handleArtChange(artwork.id, { category: event.target.value })}
+              placeholder="ex: Natură, Portret, Peisaj"
+            />
           </div>
         </div>
                     <div>
@@ -468,7 +431,7 @@ export const ArtLibraryPanel = () => {
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Note preț</label>
+                        <label className="text-sm font-medium text-muted-foreground">"Note preț"</label>
                             <Input
                               value={artwork.pricing?.notes || ""}
                               onChange={(event) =>
