@@ -209,6 +209,9 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
                      <p className="text-2xl font-bold text-primary">{priceLabel}</p>
                      {getStatusBadge()}
                   </div>
+                  {artwork.pricing?.notes && (
+                    <p className="text-sm text-muted-foreground mt-1">{artwork.pricing.notes}</p>
+                  )}
                 </div>
               </div>
 
