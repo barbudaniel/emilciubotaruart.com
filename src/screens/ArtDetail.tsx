@@ -86,7 +86,7 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
   const priceLabel =
     artwork.pricing?.amount && artwork.pricing.isAvailable
       ? formatPrice(artwork.pricing.amount, artwork.pricing.currency)
-      : artwork.pricing?.notes || "Disponibil la cerere";
+      : artwork.pricing?.notes || "";
 
   const getStatusBadge = () => {
     const status = artwork.pricing?.availabilityStatus || "available";

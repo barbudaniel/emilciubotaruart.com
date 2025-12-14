@@ -129,6 +129,11 @@ const PaintingArt = () => {
                         La comandă
                       </Badge>
                     )}
+                    {artwork.pricing?.availabilityStatus === "available" && (
+                      <Badge variant="outline" className="bg-background/80 backdrop-blur-sm shadow-sm border-primary text-primary">
+                        Disponibil
+                      </Badge>
+                    )}
                   </div>
                   <div className="relative aspect-square overflow-hidden">
                     <Image
