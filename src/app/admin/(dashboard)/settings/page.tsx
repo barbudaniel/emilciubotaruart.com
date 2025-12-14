@@ -3,6 +3,7 @@
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminPageActions } from "@/components/admin/AdminPageActions";
 import { SiteIdentityPanel } from "@/screens/admin/SiteIdentityPanel";
+import { ContactPanel } from "@/screens/admin/ContactPanel";
 
 export default function SettingsPage() {
   return (
@@ -14,6 +15,7 @@ export default function SettingsPage() {
       />
       <div className="p-6 space-y-6">
         <SiteIdentityPanel />
+        <ContactPanel />
       </div>
     </>
   );
