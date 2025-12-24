@@ -199,19 +199,45 @@ export const ArtLibraryPanel = () => {
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="text-sm font-medium text-muted-foreground">Colecție</label>
-            <Input
+            <Select
               value={artwork.collection || ""}
-              onChange={(event) => handleArtChange(artwork.id, { collection: event.target.value })}
-              placeholder="ex: Pictură, Artă Abstractă"
-            />
+              onValueChange={(value) => {
+                const newCategories = getCategoriesForCollection(value);
+                handleArtChange(artwork.id, { 
+                  collection: value,
+                  category: newCategories[0] || ""
+                });
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selectează colecția" />
+              </SelectTrigger>
+              <SelectContent>
+                {allCollectionOptions.map((collection) => (
+                  <SelectItem key={collection} value={collection}>
+                    {collection}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <label className="text-sm font-medium text-muted-foreground">Categorie</label>
-            <Input
+            <Select
               value={artwork.category || ""}
-              onChange={(event) => handleArtChange(artwork.id, { category: event.target.value })}
-              placeholder="ex: Natură, Portret, Peisaj"
-            />
+              onValueChange={(value) => handleArtChange(artwork.id, { category: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selectează categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                {getCategoriesForCollection(artwork.collection || "").map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
                     <div>

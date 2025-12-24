@@ -6,11 +6,9 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { OrnamentalDivider } from "@/components/OrnamentalDivider";
 import { useFadeUpOnScroll } from "@/hooks/useFadeUpOnScroll";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { useCmsData } from "@/providers/cms-data-provider";
 
 const Home = () => {
@@ -44,11 +42,15 @@ const Home = () => {
       return (
         <section key={section.id} className="py-20 bg-muted/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-10">
-            <div className="text-center mb-16 fade-up">
+            <header className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4 tracking-wide">{section.title || "Lucrări selectate"}</h2>
-              <OrnamentalDivider />
+              <div className="flex items-center justify-center gap-3 py-4 my-4">
+                <span className="h-px w-12 bg-border" />
+                <span className="text-primary/60">✦</span>
+                <span className="h-px w-12 bg-border" />
+              </div>
               <p className="text-muted-foreground max-w-2xl mx-auto">{section.description || "O selecție curatorială din atelier."}</p>
-            </div>
+            </header>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredArtworks.length === 0 ? (
@@ -85,13 +87,13 @@ const Home = () => {
       return (
         <section key={section.id} className="py-20 bg-background">
           <div className="container mx-auto px-4 sm:px-6 lg:px-10">
-            <div className="grid gap-8 md:grid-cols-2 items-center rounded-3xl border bg-card/80 p-10 shadow-lg">
-              <div>
+            <article className="grid gap-8 md:grid-cols-2 items-center rounded-3xl border bg-card/80 p-10 shadow-lg">
+              <header>
                 <p className="text-sm uppercase tracking-wide text-muted-foreground">Invitație</p>
                 <h2 className="text-3xl font-bold mt-3 mb-4">{section.title}</h2>
                 <p className="text-muted-foreground whitespace-pre-line">{section.description || section.manualContent}</p>
-              </div>
-              <div className="flex flex-col gap-4 items-center justify-center text-center">
+              </header>
+              <aside className="flex flex-col gap-4 items-center justify-center text-center">
                 <p className="text-muted-foreground">
                   Completează formularul de contact și voi reveni cu un răspuns în cel mai scurt timp.
                 </p>
@@ -100,8 +102,8 @@ const Home = () => {
                     Trimite un mesaj
                   </Button>
                 </Link>
-              </div>
-            </div>
+              </aside>
+            </article>
           </div>
         </section>
       );
@@ -110,44 +112,54 @@ const Home = () => {
     if (section.type === "expositions") {
       const selectedExpositions = section.referenceIds.length ? getExpositionsByIds(section.referenceIds) : expositions;
       return (
-        <section key={section.id} className="py-20 bg-muted/20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
-            <div className="text-center fade-up">
-              <h2 className="text-4xl font-bold mb-4">{section.title || "Expoziții"}</h2>
-              <OrnamentalDivider />
+        <section key={section.id} className="py-20 bg-muted/20" aria-labelledby={`${section.id}-title`}>
+          <article className="container mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
+            <header className="text-center">
+              <h2 id={`${section.id}-title`} className="text-4xl font-bold mb-4">{section.title || "Expoziții"}</h2>
+              <div className="flex items-center justify-center gap-3 py-4 my-4" aria-hidden="true">
+                <span className="h-px w-12 bg-border" />
+                <span className="text-primary/60">✦</span>
+                <span className="h-px w-12 bg-border" />
+              </div>
               <p className="text-muted-foreground max-w-2xl mx-auto">{section.description}</p>
-            </div>
-            <div className="grid gap-8 md:grid-cols-2">
+            </header>
+            <ul className="grid gap-8 md:grid-cols-2 list-none p-0">
               {selectedExpositions.length === 0 ? (
-                <p className="col-span-full text-center text-muted-foreground">Adaugă expoziții în CMS și selectează-le în această secțiune.</p>
+                <li className="col-span-full text-center text-muted-foreground">Adaugă expoziții în CMS și selectează-le în această secțiune.</li>
               ) : (
                 selectedExpositions.map((expo) => (
-                  <Card key={expo.id} className="p-6 space-y-3">
-                    <p className="text-sm uppercase tracking-wide text-muted-foreground">{expo.status}</p>
-                    <h3 className="text-2xl font-semibold">{expo.title}</h3>
-                    <p className="text-muted-foreground">
-                      {expo.venue} • {expo.location}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {expo.startDate} – {expo.endDate}
-                    </p>
-                    <p className="text-sm text-muted-foreground line-clamp-3">{expo.description}</p>
-                  </Card>
+                  <li key={expo.id}>
+                    <Card className="p-6 space-y-3 h-full">
+                      <p className="text-sm uppercase tracking-wide text-muted-foreground">{expo.status}</p>
+                      <h3 className="text-2xl font-semibold">{expo.title}</h3>
+                      <p className="text-muted-foreground">
+                        {expo.venue} • {expo.location}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {expo.startDate} – {expo.endDate}
+                      </p>
+                      <p className="text-sm text-muted-foreground line-clamp-3">{expo.description}</p>
+                    </Card>
+                  </li>
                 ))
               )}
-            </div>
-          </div>
+            </ul>
+          </article>
         </section>
       );
     }
 
     return (
       <section key={section.id} className="py-16 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-10 max-w-4xl text-center space-y-4">
+        <header className="container mx-auto px-4 sm:px-6 lg:px-10 max-w-4xl text-center space-y-4">
           <h2 className="text-3xl font-bold">{section.title}</h2>
-          <OrnamentalDivider />
+          <div className="flex items-center justify-center gap-3 py-4 my-4">
+            <span className="h-px w-12 bg-border" />
+            <span className="text-primary/60">✦</span>
+            <span className="h-px w-12 bg-border" />
+          </div>
           <p className="text-muted-foreground whitespace-pre-line">{section.description || section.manualContent}</p>
-        </div>
+        </header>
       </section>
     );
   };
