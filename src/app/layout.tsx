@@ -31,7 +31,7 @@ export default async function RootLayout({
 
   return (
     <html lang="ro">
-      <body className={`${cormorant.variable} ${inter.variable} antialiased`}>
+      <body className={`${cormorant.variable} ${inter.variable} antialiased`} suppressHydrationWarning>
         <AppProviders initialData={initialData}>
           <Toaster />
           {children}

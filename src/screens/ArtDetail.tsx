@@ -124,15 +124,38 @@ const ArtDetail = ({ slug }: ArtDetailProps) => {
   const handleSubmitInquiry = async (event: React.FormEvent) => {
     event.preventDefault();
     setFormStatus("sending");
-    setTimeout(() => {
+    
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone?.trim() || undefined,
+          regarding: `Întrebare despre: ${artwork.title}`,
+          message: formData.message.trim(),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Nu s-a putut trimite mesajul.");
+      }
+
       setFormStatus("success");
       setTimeout(() => {
         setIsDialogOpen(false);
         setFormStatus("idle");
         setFormData({ name: "", email: "", phone: "", message: "" });
       }, 2000);
-    }, 1000);
+    } catch (error) {
+      console.error("[ArtDetail] Inquiry submission failed:", error);
+      setFormStatus("error");
+    }
   };
+
 
   const qrValue = artwork.qrCode?.targetUrl || (typeof window !== "undefined" ? window.location.href : "");
 
